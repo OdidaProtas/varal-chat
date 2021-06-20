@@ -23,6 +23,7 @@ export default class MessageController {
     }
 
     async remove(request: Request, response: Response, next: NextFunction) {
-
+        let messageToRemove = await this.messageRepository.findOne(request.params.id);
+        await this.messageRepository.remove(messageToRemove);
     }
 }

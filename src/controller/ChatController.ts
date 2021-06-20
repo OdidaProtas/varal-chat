@@ -23,6 +23,7 @@ export default class ChatController {
     }
 
     async remove(request: Request, response: Response, next: NextFunction) {
-
+        let chatToRemove = await this.chatRepository.findOne(request.params.id);
+        await this.chatRepository.remove(chatToRemove);
     }
 }

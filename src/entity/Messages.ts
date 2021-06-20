@@ -12,7 +12,9 @@ export default class Messages {
     content: string;
 
 
-    @Column()
+    @Column({
+        default: false
+    })
     isRead: boolean;
 
     @Column({

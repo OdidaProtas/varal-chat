@@ -10,6 +10,13 @@ import {Routes} from "./routes";
 import {createConnection} from "typeorm";
 import {UserController} from "./controller/UserController";
 
+const options = {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+}
+
 
 createConnection().then(async () => {
 
@@ -17,6 +24,8 @@ createConnection().then(async () => {
     const app = express();
 
     const server = http.createServer(app);
+
+    const io = require("socket.io")(server, options);
 
     // configure middleware
     app.use(cors());
@@ -45,6 +54,11 @@ createConnection().then(async () => {
             }
         )
         ;
+    });
+
+    io.on("connection", client => {
+
+        console.log("Client connected");
     });
 
 
