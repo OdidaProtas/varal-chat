@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany, JoinTable} from "typeorm";
 import * as bcrypt from "bcrypt";
+import Chat from "./Chat";
 
 @Entity()
 export class User {
@@ -7,7 +8,9 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+        unique: true
+    })
     username: string;
 
     @Column()
@@ -16,10 +19,17 @@ export class User {
     @Column()
     image: string;
 
+    @OneToMany(() => Chat, chat => chat.partyA)
+    @JoinTable()
+    myChats: Chat[];
+
+    @OneToMany(() => Chat, chat => chat.partyB)
+    @JoinTable()
+    inbox: Chat[];
+
     @BeforeInsert()
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);
     }
-
 
 }
