@@ -36,7 +36,7 @@ export class UserController {
         const {username, password} = request.body;
         const [data, error] = await ref(this.userRepository.findOne({username: username}));
 
-        if (error) return response.sendStatus(404);
+        if (error || data == undefined) return response.sendStatus(404);
         if (bcrypt.compareSync(password, data.password)) return response.send({token: generateToken(data)});
         return response.sendStatus(403);
     }

@@ -7,8 +7,6 @@ module.exports = {
     "database": "varal_test_dev",
     "synchronize": false,
     "logging": false,
-    "dropSchema": true,
-    "migrationsRun": true,
     "entities": [
         "src/entity/**/*.ts"
     ],
