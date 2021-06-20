@@ -4,7 +4,6 @@ import {User} from "../entity/User";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import ref from "./ref";
-import * as assert from "assert";
 
 export class UserController {
 
@@ -19,7 +18,12 @@ export class UserController {
     }
 
     async save(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.save(request.body);
+
+        const {password} = request.body;
+        request.body["password"] = bcrypt.hashSync(password, 8);
+
+        const [data, error] = await ref(this.userRepository.save(request.body));
+        return error ? response.sendStatus(403) : data;
     }
 
     async remove(request: Request, response: Response, next: NextFunction) {
@@ -30,12 +34,11 @@ export class UserController {
     async login(request: Request, response: Response, next: NextFunction) {
 
         const {username, password} = request.body;
-        const [datia, error] = await ref(this.userRepository.findOne({username: username}));
+        const [data, error] = await ref(this.userRepository.findOne({username: username}));
 
         if (error) return response.sendStatus(404);
         if (bcrypt.compareSync(password, data.password)) return response.send({token: generateToken(data)});
-
-        return response.sendStatus(403)
+        return response.sendStatus(403);
     }
 
     async frisk(request: Request, response: Response, next: NextFunction) {
@@ -46,6 +49,7 @@ export class UserController {
             return response.sendStatus(400);
 
         return jwt.verify(accessToken, process.env.jwt_secret as string, async (err: any, user: any) => {
+
             if (err) return response.sendStatus(403);
             request.user = await ref(this.userRepository.findOne({username: user.username}));
             next();
@@ -53,7 +57,7 @@ export class UserController {
     }
 
     async pass(request: Request, response: Response, next: NextFunction) {
-
+        next();
     }
 
 
