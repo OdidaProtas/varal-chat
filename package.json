@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.18.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "nodemon": "^2.0.7",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.6.0",
     "psql": "0.0.1",
     "reflect-metadata": "^0.1.10",
@@ -15,12 +17,16 @@
   },
   "devDependencies": {
     "@types/node": "^15.12.4",
+    "nodemon": "^2.0.7",
+    "rimraf": "^3.0.2",
     "typescript": "^4.3.4"
   },
   "scripts": {
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "start": "ts-node src/index.ts",
     "makemigrations": "npm run typeorm migration:generate -- -n dev",
-    "migrate": "npm run typeorm migration:run"
+    "migrate": "npm run typeorm migration:run",
+    "build": "rimraf ./build && tsc",
+    "serve": "nodemon"
   }
 }

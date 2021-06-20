@@ -1,15 +1,26 @@
 import "reflect-metadata";
-import {createConnection} from "typeorm";
+
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as http from "http";
+import * as cors from "cors";
+
 import {Request, Response} from "express";
 import {Routes} from "./routes";
+import {createConnection} from "typeorm";
 
-createConnection().then(async connection => {
+
+createConnection().then(async () => {
 
     // create express app
     const app = express();
+
+    const server = http.createServer(app);
+
+    app.use(cors());
     app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended: true}));
+
 
     // register express routes from defined application routes
     Routes.forEach(route => {
@@ -25,8 +36,8 @@ createConnection().then(async connection => {
     });
 
 
-    app.listen(3000);
+    server.listen(process.env.PORT);
 
-    console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
+    console.log(`Express server has started on port ${process.env.PORT}`);
 
 }).catch(error => console.log(error));
