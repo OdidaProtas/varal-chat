@@ -1,6 +1,7 @@
 import {UserController} from "./controller/UserController";
 import MessageController from "./controller/MessageController";
 import ChatController from "./controller/ChatController";
+import ConnectionsController from "./controller/ConnectionsController";
 
 export const Routes = [{
     method: "get",
@@ -76,8 +77,27 @@ export const Routes = [{
         action: "remove"
     }, {
         method: "post",
-        route: "/char",
-        controller: ChatController,
-        action: "login"
+        route: "/connections",
+        controller: ConnectionsController,
+        action: "save"
+    },
+    {
+        method: "get",
+        route: "/connections/:id",
+        controller: ConnectionsController,
+        action: "all"
+    },
+    {
+        method: "patch",
+        route: "/connections/:id",
+        controller: ConnectionsController,
+        action: "update"
+    },
+    {
+        method: "delete",
+        route: "/connections/:id",
+        controller: ConnectionsController,
+        action: "remove"
     }
 ];
+

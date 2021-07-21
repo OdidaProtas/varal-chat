@@ -1,6 +1,16 @@
-import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {User} from "./User";
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    JoinTable,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn
+} from "typeorm";
+
 import Messages from "./Messages";
+import Connections from "./Connections";
 
 @Entity()
 export default class Chat {
@@ -8,11 +18,9 @@ export default class Chat {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => User)
-    partyA: User;
-
-    @ManyToOne(() => User)
-    partyB: User;
+    @OneToOne(type => Connections, connection => connection.chat)
+    @JoinColumn()
+    connection: Connections;
 
     @OneToMany(type => Messages, messages => messages.chat)
     @JoinTable()

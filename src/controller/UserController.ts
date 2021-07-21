@@ -10,7 +10,8 @@ export class UserController {
     private userRepository = getRepository(User);
 
     async all(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.find();
+        const [data, error] = await ref(this.userRepository.find())
+        return error ? response.sendStatus(403) : data;
     }
 
     async one(request: Request, response: Response, next: NextFunction) {
@@ -48,10 +49,10 @@ export class UserController {
         if (!accessToken.startsWith("Bearer ") || accessToken == null || accessToken == undefined)
             return response.sendStatus(400);
 
-        return jwt.verify(accessToken, process.env.jwt_secret as string, async (err: any, user: any) => {
-
-            if (err) return response.sendStatus(403);
-            request.user = await ref(this.userRepository.findOne({username: user.username}));
+        return jwt.verify(accessToken.split(" ")[1], process.env.jwt_secret as string, async (err: any, user: any) => {
+            const [data, error] = await ref(getRepository(User).findOne(user.id));
+            request.user = data;
+            if (error || err) return response.sendStatus(403);
             next();
         })
     }
@@ -67,8 +68,10 @@ export class UserController {
 const generateToken = (data: User) => {
     const decode = {
         id: data.id,
-        username: data.username
+        username: data.username,
+        image: data.image
     }
 
-    return jwt.sign(JSON.stringify(decode), process.env.jwt_secret);
+    const secret = process.env.jwt_secret;
+    return jwt.sign(decode, secret);
 }

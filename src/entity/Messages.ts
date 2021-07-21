@@ -18,7 +18,8 @@ export default class Messages {
     isRead: boolean;
 
     @Column({
-        type: "date"
+        type: "date",
+        default: "now"
     })
     timeStamp: string;
 

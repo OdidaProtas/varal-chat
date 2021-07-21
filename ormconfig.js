@@ -4,7 +4,7 @@ module.exports = {
     "port": 5432,
     "username": "postgres",
     "password": "",
-    "database": "varal_test_dev",
+    "database": "varal_tes_db",
     "synchronize": false,
     "logging": false,
     "entities": [

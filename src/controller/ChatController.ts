@@ -26,4 +26,5 @@ export default class ChatController {
         let chatToRemove = await this.chatRepository.findOne(request.params.id);
         await this.chatRepository.remove(chatToRemove);
     }
+
 }

@@ -1,5 +1,7 @@
 import "reflect-metadata";
 
+const globalAny: any = global;
+
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as http from "http";
@@ -9,6 +11,7 @@ import {Request, Response} from "express";
 import {Routes} from "./routes";
 import {createConnection} from "typeorm";
 import {UserController} from "./controller/UserController";
+import SocketController from "./controller/SocketController";
 
 const options = {
     cors: {
@@ -27,6 +30,7 @@ createConnection().then(async () => {
 
     const io = require("socket.io")(server, options);
 
+
     // configure middleware
     app.use(cors());
     app.use(bodyParser.json());
@@ -44,7 +48,7 @@ createConnection().then(async () => {
                 route.route == "/users" && route.method == "post" ? pass : intercept,
 
             (req: Request, res: Response, next: Function) => {
-                const result = (new (route.controller as any))[route.action](req, res, next);
+                const result = (new (route.controller as any))[route.action](req, res, next, io);
                 if (result instanceof Promise) {
                     result.then(result => result !== null && result !== undefined ? res.send(result) : undefined);
 
@@ -56,11 +60,8 @@ createConnection().then(async () => {
         ;
     });
 
-    io.on("connection", client => {
 
-        console.log("Client connected");
-    });
-
+    io.on("connection", new SocketController().client);
 
     server.listen(process.env.PORT);
 
